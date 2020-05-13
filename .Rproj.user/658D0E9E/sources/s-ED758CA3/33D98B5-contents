@@ -1,7 +1,0 @@
-install.packages("blogdown")
-blogdown::install_hugo()
-blogdown::new_site(theme="nurlansu/hugo-sustain")
-blogdown::serve_site()
-install.packages('rmarkdown')
-install.packages("formatR", repos = "http://cran.rstudio.com")
-install.packages("plotROC")
