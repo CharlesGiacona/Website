@@ -1,0 +1,254 @@
+---
+title: "Project 2"
+author: "Charles Giacona (cdg2592)"
+date: "4/21/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,
+                      fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+
+class_diag <- function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(plotROC)
+library(lmtest) 
+library(carData)
+library(sandwich)
+```
+
+#Introduction:
+####I decided to analyze the dataset 'Salaries' from the package 'carData' for project 2. 'Salaries' contains 397 observations with 6 variables: 'rank' (AssocProf, AsstProf, and Prof), 'discipline' (A: “theoretical” departments/B: “applied” departments), 'yrs.since.phd', 'yrs.service', 'sex' (Female or Male), and 'salary' (nine-month salary US$). The data was initially collected to survey for pay inequalities among male and female faculty at an unnamed university.
+
+#Part 1
+
+```{r MANOVA}
+data(Salaries)
+glimpse(Salaries)
+man1<-manova(cbind(yrs.since.phd,yrs.service,salary)~sex, data=Salaries) 
+summary(man1)
+summary.aov(man1)
+Salaries%>%group_by(sex)%>%
+  summarize(mean(yrs.since.phd),mean(yrs.service),mean(salary))
+```
+####There were 4 hypotheses tests conducted (1 MANOVA, 3 ANOVA). Therefore, the Bonferroni correction for type 1 error is a=(0.05/4)=0.0125. Significant differences were found among males and females for at least one of the dependent variables (Pillai= 0.032223 F(3,393) p=.0049). Univariate ANOVAs for each dependent variable were then conducted as follow-up tests to the MANOVA, using the Bonferroni method for controlling Type I error rates for multiple comparisons. The univariate ANOVAs for years since phd, yrs of service, and salary were also significant, F(1,395) p=0.002961, F(1,395) p=0.002127, F(1,395) p=0.005667 respectively. Assumptions of these tests include multivariate normality, homogeneity of groups, and no univariate or multivariate outliers present. 
+
+#Part 2
+
+```{r Randomization Test}
+Salaries%>%count(discipline)
+A<-subset(Salaries, discipline=="A", select=salary)
+A<-unlist(A)
+B<-subset(Salaries, discipline=="B", select=salary)
+B<-unlist(B)
+discipline_salary<-data.frame(discipline=c(rep("A",181),
+                                           rep("B",216)),salary=c(A,B))
+#Mean diff in salary across disipline
+discipline_salary%>%group_by(discipline)%>%
+  summarize(means=mean(salary))%>%
+  summarize(`mean_diff:`=diff(means))
+
+#randomization 
+rand_dist<-vector()
+for(i in 1:5000){
+new<-data.frame(salary=sample(discipline_salary$salary),
+                discipline=discipline_salary$discipline) 
+rand_dist[i]<-mean(new[new$discipline=="A",]$salary)-
+              mean(new[new$discipline=="B",]$salary)}
+
+#histogram of random dist with calculated mean diff plotted
+hist(rand_dist,main="Null Random Distribution of Discipline vs. Salary",ylab=""); 
+abline(v = 9480.264,col="red")
+mean(rand_dist< -9480.264 | rand_dist> 9480.264)
+t.test(data=discipline_salary,salary~discipline)
+```
+
+#### Null hypotheses: Mean salary is the same for discipline A vs. disciplineB.
+####Alternative hypotheses: Mean salary is not the same for discipline A vs. discipline B.
+#### A two tailed t-test comparing the mean difference in salaries from the two groups to the randomly generated mean yeailded a p-value of 0.0018. Therefore, the null hypotheses is rejected.
+
+#Part 3
+
+```{r Linear Regression}
+#Multiple Regression
+Salaries1<-Salaries
+Salaries1$yrs.service_c <- Salaries1$yrs.service - 
+  mean(Salaries1$yrs.service) 
+fit<-lm(salary ~ yrs.service_c * discipline, data=Salaries1) 
+summary(fit)
+
+#Plot of regression
+ggplot(Salaries1, aes(x=yrs.service_c, y=salary,
+                      color=discipline))+ geom_point()+
+  geom_smooth(method="lm",formula=y~1,se=F,
+              fullrange=T,aes(color=discipline))+
+  ggtitle("t-test")+xlab("Years of Service")+
+  ylab("Salary")
+
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+
+#Test graph of linearity/ normality
+ggplot()+geom_qq(aes(sample=resids))+
+  geom_qq_line(aes(sample=resids), color='red')
+#Formal test normality
+ks.test(resids, "pnorm", mean=0, sd(resids)) 
+#Formal test homoskedasticity
+bptest(fit)
+
+#Robust SE
+coeftest(fit, vcov = vcovHC(fit))[,1:2]
+
+#Proprtion of variance
+(sum((Salaries$salary-mean(Salaries$salary))^2)-
+    sum(fit$residuals^2))/sum((Salaries$salary-
+                                 mean(Salaries$salary))^2)
+```
+
+#### yrs.service_c: Controlling for discipline, for every 1-unit increase in 'yrs.service_c', salary goes up by $526.80 on average. (std. error= 150.1 , t value= 3.510, pPr(>|t|)= 0.000499)
+#### disciplineB: Controlling for 'yrs.service_c', salary is $13102.50 higher in discipline B than discipline A. (std. error= 2813.7, t value= 4.657, pPr(>|t|)= 0.0000044)
+#### yrs.service_c:disciplineB: Controlling the slope of 'yrs.service_c', salary is $695.20 higher in discipline B than discipline A. (std. error= 215.9, t value= 3.220, pPr(>|t|)= 0.001388)
+#### Rejecting the null hypothesis of no homoskedasticity I computed robust SE. The new Std. Errors for the coefficients yrs.service, disiplineB, and their interaction are 178.8339, 2932.4255, and 261.1479 respectively. These values are larger than the values calculated in the original regression because of the homoskedasticity. Aditionally, 0.1795 is the proportion of variation in the response variable explained by the overall model.
+
+#Part 4
+
+```{r Bootstrapping}
+#Bootstrapped Sample
+samp_distn<-replicate(5000, {  
+  boot_dat<-Salaries1[sample(nrow(Salaries1),replace=TRUE),]  
+  fit1<-lm(salary ~ yrs.service_c * discipline, data=boot_dat)  
+  coef(fit1) 
+}) 
+
+#Normal SE
+coeftest(fit)[,1:2] 
+
+#Bootstrapped SE
+samp_distn%>%t%>%as.data.frame%>%summarize_all(sd)
+```
+
+####The Bootstrapped SE for 'yrs.service_c', 'disciplineB', and 'yrs.service_c:disciplineB' are 174.433, 2955.389, and 254.9534 respectively. These values are larger for all three variables compared to the normal SE's but only larger than the robust SE for the coefficient 'disciplineB'.
+
+#Part 5
+
+```{r Logistic regression and CV}
+fit3<-glm(discipline~salary+yrs.service+sex,
+          data=Salaries1,family="binomial") 
+coeftest(fit3)
+exp(coef(fit3))
+
+#confusion matrix
+prob<-predict(fit3,type="response") 
+pred<-ifelse(prob>.5,"B","A") 
+
+table(prediction=pred, truth=Salaries$discipline)%>%addmargins
+(80+178)/397 #Accuracy
+80/118 #Sensitivity 
+178/279 #Specificity 
+80/181 #Precision 
+
+#Density plot of log-odds
+Salaries1$logit<-predict(fit3)
+ggplot(Salaries1,aes(logit, fill=discipline))+geom_density(alpha=.3)+
+  geom_vline(xintercept=0,lty=2)+
+  ggtitle("Density Plot of Log-odds")
+
+#ROC Plot
+ROCplot<-ggplot(Salaries)+
+  geom_roc(aes(d=discipline,m=prob), n.cuts=0)+ 
+  geom_segment(aes(x=0,xend=1,y=0,yend=1),lty=2)+
+  ggtitle("ROC Plot")
+ROCplot
+calc_auc(ROCplot)
+
+#10 Fold CV
+set.seed(1234)
+k=10
+data<-Salaries[sample(nrow(Salaries)),] 
+folds<-cut(seq(1:nrow(Salaries)),breaks=k,labels=F)  
+diags<-NULL
+for(i in 1:k){
+  train1 <- data[folds!=i,] 
+  test <- data[folds==i,] 
+  truth <- test$discipline  
+  fit4 <- glm(discipline~salary+yrs.service+sex+rank, 
+             data=train1, family="binomial")
+  probs1 <- predict(fit4, newdata=test, type="response")
+  diags<-rbind(diags,class_diag(probs1,truth))
+}
+diags%>%summarize_all(mean)
+```
+
+####For every one unit increase in salary the odds of predicting discipline B change by a factor of 1.0000178. For every one unit increase in years of service the odds of predicting discipline B change by a factor of 0.9587918. Controlling for salary and years of service, there is a 1.0641579 odds higher for males to be in discipline B relative to females.
+####From the confusion matrix, the accuracy, sensitivity, specificity, and precision of this model are 0.65, 0.68, 0.64, and 0.44 respectively. Aditionally, the AUC is equal to 0.68 and was computed using 'calc_auc' from the generated ROC plot. This is a "poor" trade-off between sensitivity and specificity in the model. The 10-fold CV reported that the average out-of-sample AUC, Accuracy, Sensitivity, and Recall are 0.68, 0.64, 0.49, and 0.64 respectively.
+
+#Part 6
+
+```{r LASSO}
+library(glmnet)
+set.seed(1234)
+y<-as.matrix(Salaries$discipline) 
+x<-model.matrix(discipline~.,data=Salaries)[,-1] 
+cv<-cv.glmnet(x,y,family="binomial")
+lasso<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso)
+
+#10 Fold CV
+set.seed(1234)
+k=10
+data<-Salaries[sample(nrow(Salaries)),] 
+folds<-cut(seq(1:nrow(Salaries)),breaks=k,labels=F)   
+diags1<-NULL
+for(i in 1:k){
+  train <- data[folds!=i,] 
+  test <- data[folds==i,] 
+  truth <- test$discipline  
+  fit5 <- glm(discipline~ salary+yrs.since.phd, 
+             data=train, family="binomial")
+  probs2 <- predict(fit5, newdata=test, type="response")
+  diags1<-rbind(diags1,class_diag(probs2,truth))
+}
+diags1%>%summarize_all(mean)
+```
+
+####The variables retained from the LASSO regression, predicting discipline, are 'salary' and 'yrs.since.phd.' Using these retained variables from the LASSO regression, a 10-fold CV yielded an AUC of 0.71 which is a better CV performance compared to the CV in part five which yielded an AUC of 0.68. However, ACC remained roughly the same at .063.

@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Charles Giacona" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 1: Exploratory Data Analysis</title>
+    <meta name="generator" content="Hugo 0.70.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project1/">Project 1: Exploratory Data Analysis</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<p>#Introduction:</p>
+<div id="i-have-chosen-four-datasets-describing-demographic-characteristics-of-215-countries-in-the-world.-my-first-and-second-data-sets-contain-adolescent-fertility-rate-measured-by-the-number-of-births-per-1000-women-ages-15-to-19-and-infant-mortality-rate-measured-by-the-number-of-deaths-per-1000-live-births-of-children-under-one-year-of-age-for-the-year-2017.-lastly-my-third-and-fourth-data-sets-contain-data-on-domestic-general-government-health-expenditure-per-capita-and-overall-gdp-per-capita-current-us-for-the-year-2017.-all-four-datasets-were-obtained-through-world-health-bank-and-have-country-as-their-common-index-value." class="section level4">
+<h4>I have chosen four datasets describing demographic characteristics of 215 countries in the world. My first and second data sets contain adolescent fertility rate, measured by the number of births per 1,000 women ages 15 to 19, and infant mortality rate, measured by the number of deaths per 1,000 live births of children under one year of age, for the year 2017. Lastly, my third and fourth data sets contain data on domestic general government health expenditure per capita and overall GDP per capita (current US$) for the year 2017. All four datasets were obtained through World Health Bank and have country as their common index value.</h4>
+</div>
+<div id="i-chose-these-datasets-because-i-enjoy-studying-government-policy-history-and-country-demographics.-i-am-interested-in-seeing-if-there-is-a-strong-correlation-between-these-variables-to-make-predictions-on-how-certain-policies-or-demographics-may-influence-the-health-of-a-countrys-population.-after-statistically-analyzing-the-data-sets-i-expect-to-see-that-countries-who-have-higher-domestic-general-government-health-expenditure-and-gdp-per-capita-will-also-have-lower-infant-mortality-and-adolescent-fertility-rates-due-to-health-care-access-which-would-result-in-unwanted-pregnancies-and-the-ability-to-maintain-the-health-of-an-infant." class="section level4">
+<h4>I chose these datasets because I enjoy studying government policy, history, and country demographics. I am interested in seeing if there is a strong correlation between these variables to make predictions on how certain policies or demographics may influence the health of a country’s population. After statistically analyzing the data sets I expect to see that countries who have higher domestic general government health expenditure and GDP per capita will also have lower infant mortality and adolescent fertility rates due to health care access which would result in unwanted pregnancies and the ability to maintain the health of an infant.</h4>
+<p>#Joining:</p>
+<pre class="r"><code># Renamed origional datasets
+Adolescent_fertility_rate_2017 &lt;- read_excel(&quot;Adolescent fertility rate 2017.xlsx&quot;)
+Domestic_general_government_health_expenditure_per_capita_current_US_ &lt;- {
+    read_excel(&quot;Domestic general government health expenditure per capita (current US$).xlsx&quot;)
+}
+Infant_mortality_2017 &lt;- read_excel(&quot;Infant mortality 2017.xlsx&quot;)
+GDP_per_capita &lt;- read_excel(&quot;GDP per capita (current US$).xls&quot;)
+
+# Explored individual datasets (variable/ observation count)
+glimpse(Infant_mortality_2017)</code></pre>
+<pre><code>## Rows: 259
+## Columns: 2
+## $ country               &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;America...
+## $ infant_mortality_rate &lt;dbl&gt; 49.5000, 8.0000, 20.6000, NA, 2.8000, 53.4000...</code></pre>
+<pre class="r"><code>glimpse(Adolescent_fertility_rate_2017)</code></pre>
+<pre><code>## Rows: 259
+## Columns: 2
+## $ country                   &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;Ame...
+## $ adolescent_fertility_rate &lt;dbl&gt; 68.95700, 19.64200, 10.07100, NA, NA, 150...</code></pre>
+<pre class="r"><code>glimpse(Domestic_general_government_health_expenditure_per_capita_current_US_)</code></pre>
+<pre><code>## Rows: 259
+## Columns: 2
+## $ country            &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;American S...
+## $ health_expenditure &lt;dbl&gt; 2.935752, 112.301534, 176.265316, NA, 1883.99543...</code></pre>
+<pre class="r"><code>glimpse(GDP_per_capita)</code></pre>
+<pre><code>## Rows: 264
+## Columns: 2
+## $ country        &lt;chr&gt; &quot;Aruba&quot;, &quot;Afghanistan&quot;, &quot;Angola&quot;, &quot;Albania&quot;, &quot;Andorr...
+## $ GDP_per_capita &lt;dbl&gt; 25630.2665, 556.3021, 4095.8129, 4532.8902, 39134.39...</code></pre>
+<pre class="r"><code># Took out NAs
+mortality &lt;- Infant_mortality_2017 %&gt;% na.omit
+fertility &lt;- Adolescent_fertility_rate_2017 %&gt;% na.omit
+health_expend &lt;- Domestic_general_government_health_expenditure_per_capita_current_US_ %&gt;% 
+    na.omit
+gdp &lt;- GDP_per_capita %&gt;% na.omit
+
+# Joined data
+twooffour &lt;- mortality %&gt;% inner_join(fertility, by = c(&quot;country&quot;))
+threeoffour &lt;- twooffour %&gt;% inner_join(health_expend, by = c(&quot;country&quot;))
+projectdata &lt;- threeoffour %&gt;% inner_join(gdp, by = c(&quot;country&quot;))
+glimpse(projectdata)</code></pre>
+<pre><code>## Rows: 215
+## Columns: 5
+## $ country                   &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;Ang...
+## $ infant_mortality_rate     &lt;dbl&gt; 49.5000, 8.0000, 20.6000, 53.4000, 5.2000...
+## $ adolescent_fertility_rate &lt;dbl&gt; 68.95700, 19.64200, 10.07100, 150.52600, ...
+## $ health_expenditure        &lt;dbl&gt; 2.935752, 112.301534, 176.265316, 42.0287...
+## $ GDP_per_capita            &lt;dbl&gt; 556.3021, 4532.8902, 4044.2984, 4095.8129...</code></pre>
+</div>
+<div id="the-data-sets-infant_mortality_2017-adolescent_fertility_rate_2017-and-domestic_general_government_health_expenditure_per_capita_current_us_-each-contained-259-observations.-the-data-set-gdp_per_capita-contained-264-observations.-all-the-data-sets-contained-two-variables-country-which-will-be-used-as-the-index-and-either-infant-mortality-adolescent-fertility-gdp-per-capita-or-domestic-health-expenditures-per-capita.-after-dropping-nas-from-infant_mortality_2017-adolescent_fertility_rate_2017-domestic_general_government_health_expenditure_per_-capita_current_us_-and-gdp_per_capita-26-24-33-and-17-observations-were-lost-respectively." class="section level4">
+<h4>The data sets ‘Infant_mortality_2017’, ‘Adolescent_fertility_rate_2017’, and ‘Domestic_general_government_health_expenditure_per_capita_current_US_’ each contained 259 observations. The data set ‘GDP_per_capita’ contained 264 observations. All the data sets contained two variables: country, which will be used as the index, and either infant mortality, adolescent fertility, GDP per capita, or domestic health expenditures per capita. After dropping NAs from ‘Infant_mortality_2017’, ‘Adolescent_fertility_rate_2017’, ‘Domestic_general_government_health_expenditure_per_ capita_current_US_’, and ‘GDP_per_capita’, 26, 24, 33, and 17 observations were lost respectively.</h4>
+</div>
+<div id="after-inner-joining-all-four-data-sets-the-final-data-set-contained-215-observations-with-4-numeric-variables-contributed-by-each-original-data-set-and-the-index.-therefore-an-additional-18-20-11-and-32-observations-were-lost-for-the-data-sets-infant_mortality_2017-adolescent_fertility_rate_2017-and-domestic_general_government_health_expenditure_per_-capita_current_us_-and-gdp_per_capita-respectively.-these-additional-losses-of-observations-during-the-inner-joins-occurred-because-observations-were-conserved-only-if-all-three-data-sets-shared-the-same-country-with-a-present-value-for-the-numeric-variable.-i-chose-to-perform-this-code-because-country-is-serving-as-my-index-value-and-i-wanted-to-have-observations-for-every-variable-with-its-corresponding-country.-a-potential-problem-with-dropping-observations-is-reducing-the-overall-amount-of-data-to-analyze-which-may-make-trends-more-difficult-to-see." class="section level4">
+<h4>After inner joining all four data sets the final data set contained 215 observations with 4 numeric variables (contributed by each original data set) and the index. Therefore, an additional 18, 20, 11, and 32 observations were lost for the data sets ‘Infant_mortality_2017’, ‘Adolescent_fertility_rate_2017’, and ‘Domestic_general_government_health_expenditure_per_ capita_current_US_’, and ‘GDP_per_capita’ respectively. These additional losses of observations during the inner joins occurred because observations were conserved only if all three data sets shared the same ‘country’ with a present value for the numeric variable. I chose to perform this code because ‘country’ is serving as my index value and I wanted to have observations for every variable with its corresponding country. A potential problem with dropping observations is reducing the overall amount of data to analyze which may make trends more difficult to see.</h4>
+<p>#dplyer Functions:</p>
+<pre class="r"><code>dplyr_projectdata &lt;- projectdata %&gt;% select(country, infant_mortality_rate, 
+    adolescent_fertility_rate, GDP_per_capita) %&gt;% group_by(country) %&gt;% 
+    mutate(fertility_mortality_ratio = adolescent_fertility_rate/infant_mortality_rate) %&gt;% 
+    arrange(desc(GDP_per_capita)) %&gt;% filter(GDP_per_capita &gt; 
+    10000)
+glimpse(dplyr_projectdata)</code></pre>
+<pre><code>## Rows: 72
+## Columns: 5
+## Groups: country [72]
+## $ country                   &lt;chr&gt; &quot;Luxembourg&quot;, &quot;Switzerland&quot;, &quot;Norway&quot;, &quot;I...
+## $ infant_mortality_rate     &lt;dbl&gt; 2.000000, 3.700000, 2.100000, 1.600000, 3...
+## $ adolescent_fertility_rate &lt;dbl&gt; 4.72700, 2.76300, 5.14100, 6.26900, 7.515...
+## $ GDP_per_capita            &lt;dbl&gt; 107361.31, 80450.05, 75496.75, 71314.77, ...
+## $ fertility_mortality_ratio &lt;dbl&gt; 2.3635000, 0.7467568, 2.4480952, 3.918125...</code></pre>
+</div>
+<div id="the-dplyr-functions-used-in-this-code-are-select-group_by-mutate-arrange-and-filter.-by-doing-this-i-found-countries-with-the-highest-gdp-per-capita-that-had-a-gdp-higher-than-10000.-i-was-also-able-to-see-the-variables-that-accompany-these-countries." class="section level4">
+<h4>The dplyr functions used in this code are select, group_by, mutate, arrange, and filter. By doing this I found countries with the highest GDP per capita that had a GDP higher than 10000. I was also able to see the variables that accompany these countries.</h4>
+<p>#Summary Statistics:</p>
+<pre class="r"><code># Used &#39;summarise&#39; and found the min, max, average, median,
+# standard deviation, and variation of each variable.  Used
+# &#39;pivolt_longer&#39; to make the chart more compact, &#39;seperate&#39;
+# to seperate the observations, and &#39;pivot_wider&#39; to place
+# what I just seperated in appropirate columns to tidy the
+# chart.
+projectdata %&gt;% summarize_if(is.numeric, list(zmin = min, zmax = max, 
+    zmean = mean, zmedian = median, zsd = sd, zvariation = var)) %&gt;% 
+    pivot_longer(cols = c(1:24)) %&gt;% separate(name, into = c(&quot;variable&quot;, 
+    &quot;function&quot;), sep = &quot;z&quot;) %&gt;% pivot_wider(names_from = &quot;function&quot;, 
+    values_from = &quot;value&quot;) %&gt;% kable() %&gt;% kable_styling() %&gt;% 
+    kable_styling(latex_options = &quot;scale_down&quot;)</code></pre>
+<table class="table table" style="margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+median
+</th>
+<th style="text-align:right;">
+sd
+</th>
+<th style="text-align:right;">
+variation
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+infant_mortality_rate_
+</td>
+<td style="text-align:right;">
+1.500000
+</td>
+<td style="text-align:right;">
+86.500
+</td>
+<td style="text-align:right;">
+22.37477
+</td>
+<td style="text-align:right;">
+14.71853
+</td>
+<td style="text-align:right;">
+19.44069
+</td>
+<td style="text-align:right;">
+3.779404e+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+adolescent_fertility_rate_
+</td>
+<td style="text-align:right;">
+1.379000
+</td>
+<td style="text-align:right;">
+186.538
+</td>
+<td style="text-align:right;">
+48.30441
+</td>
+<td style="text-align:right;">
+40.53600
+</td>
+<td style="text-align:right;">
+39.14633
+</td>
+<td style="text-align:right;">
+1.532435e+03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+health_expenditure_
+</td>
+<td style="text-align:right;">
+2.431441
+</td>
+<td style="text-align:right;">
+8077.926
+</td>
+<td style="text-align:right;">
+708.81850
+</td>
+<td style="text-align:right;">
+177.95779
+</td>
+<td style="text-align:right;">
+1322.58042
+</td>
+<td style="text-align:right;">
+1.749219e+06
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GDP_per_capita_
+</td>
+<td style="text-align:right;">
+292.997631
+</td>
+<td style="text-align:right;">
+107361.307
+</td>
+<td style="text-align:right;">
+12935.30718
+</td>
+<td style="text-align:right;">
+5680.58077
+</td>
+<td style="text-align:right;">
+17641.94604
+</td>
+<td style="text-align:right;">
+3.112383e+08
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Created a catagorical variable for countries &#39;above&#39;
+# average health expenditure per capita and &#39;below&#39; the
+# average health expenditure per capita.
+projectdata_wcatagory &lt;- projectdata %&gt;% mutate(health_expenditure, 
+    average_health_expenditure = ifelse(health_expenditure &gt; 
+        708.8, &quot;above&quot;, &quot;below&quot;))
+
+# Used &#39;summarise&#39; and &#39;gorup_by&#39; and found the min, max,
+# average, median, standard deviation, and variation of each
+# variable grouped in either &#39;above&#39; the average health
+# expenditure or &#39;below&#39; it.  Used &#39;pivolt_longer&#39; to make
+# the chart more compact, &#39;seperate&#39; to seperate the
+# observations, and &#39;pivot_wider&#39; to place what I just
+# seperated in appropirate columns to tidy the chart.
+projectdata_wcatagory %&gt;% group_by(average_health_expenditure) %&gt;% 
+    summarize_if(is.numeric, list(zmin = min, zmax = max, zmean = mean, 
+        zmedian = median, zsd = sd, zvariation = var)) %&gt;% pivot_longer(cols = c(2:25)) %&gt;% 
+    separate(name, into = c(&quot;variable&quot;, &quot;function&quot;), sep = &quot;z&quot;) %&gt;% 
+    pivot_wider(names_from = &quot;function&quot;, values_from = &quot;value&quot;) %&gt;% 
+    kable() %&gt;% kable_styling() %&gt;% kable_styling(latex_options = &quot;scale_down&quot;)</code></pre>
+<table class="table table" style="margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+average_health_expenditure
+</th>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+median
+</th>
+<th style="text-align:right;">
+sd
+</th>
+<th style="text-align:right;">
+variation
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+above
+</td>
+<td style="text-align:left;">
+infant_mortality_rate_
+</td>
+<td style="text-align:right;">
+1.500000
+</td>
+<td style="text-align:right;">
+29.7000
+</td>
+<td style="text-align:right;">
+4.624814
+</td>
+<td style="text-align:right;">
+3.410473
+</td>
+<td style="text-align:right;">
+4.220682
+</td>
+<td style="text-align:right;">
+1.781415e+01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+above
+</td>
+<td style="text-align:left;">
+adolescent_fertility_rate_
+</td>
+<td style="text-align:right;">
+1.379000
+</td>
+<td style="text-align:right;">
+62.7820
+</td>
+<td style="text-align:right;">
+13.103598
+</td>
+<td style="text-align:right;">
+7.810000
+</td>
+<td style="text-align:right;">
+14.065992
+</td>
+<td style="text-align:right;">
+1.978521e+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+above
+</td>
+<td style="text-align:left;">
+health_expenditure_
+</td>
+<td style="text-align:right;">
+710.935011
+</td>
+<td style="text-align:right;">
+8077.9258
+</td>
+<td style="text-align:right;">
+2654.088814
+</td>
+<td style="text-align:right;">
+2559.594231
+</td>
+<td style="text-align:right;">
+1751.475921
+</td>
+<td style="text-align:right;">
+3.067668e+06
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+above
+</td>
+<td style="text-align:left;">
+GDP_per_capita_
+</td>
+<td style="text-align:right;">
+8541.210673
+</td>
+<td style="text-align:right;">
+107361.3069
+</td>
+<td style="text-align:right;">
+39704.750080
+</td>
+<td style="text-align:right;">
+38679.127148
+</td>
+<td style="text-align:right;">
+20389.624014
+</td>
+<td style="text-align:right;">
+4.157368e+08
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+below
+</td>
+<td style="text-align:left;">
+infant_mortality_rate_
+</td>
+<td style="text-align:right;">
+2.000000
+</td>
+<td style="text-align:right;">
+86.5000
+</td>
+<td style="text-align:right;">
+27.340536
+</td>
+<td style="text-align:right;">
+21.650000
+</td>
+<td style="text-align:right;">
+19.129130
+</td>
+<td style="text-align:right;">
+3.659236e+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+below
+</td>
+<td style="text-align:left;">
+adolescent_fertility_rate_
+</td>
+<td style="text-align:right;">
+4.582000
+</td>
+<td style="text-align:right;">
+186.5380
+</td>
+<td style="text-align:right;">
+58.152256
+</td>
+<td style="text-align:right;">
+52.165500
+</td>
+<td style="text-align:right;">
+38.248298
+</td>
+<td style="text-align:right;">
+1.462932e+03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+below
+</td>
+<td style="text-align:left;">
+health_expenditure_
+</td>
+<td style="text-align:right;">
+2.431441
+</td>
+<td style="text-align:right;">
+696.1041
+</td>
+<td style="text-align:right;">
+164.605972
+</td>
+<td style="text-align:right;">
+109.978752
+</td>
+<td style="text-align:right;">
+183.323199
+</td>
+<td style="text-align:right;">
+3.360740e+04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+below
+</td>
+<td style="text-align:left;">
+GDP_per_capita_
+</td>
+<td style="text-align:right;">
+292.997631
+</td>
+<td style="text-align:right;">
+28572.1468
+</td>
+<td style="text-align:right;">
+5446.236841
+</td>
+<td style="text-align:right;">
+3933.795119
+</td>
+<td style="text-align:right;">
+5120.274730
+</td>
+<td style="text-align:right;">
+2.621721e+07
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Number of observations for each variable above or below the
+# mean health expenditure.
+projectdata_wcatagory %&gt;% group_by(average_health_expenditure) %&gt;% 
+    summarize_if(is.numeric, list(count = n_distinct)) %&gt;% kable() %&gt;% 
+    kable_styling() %&gt;% kable_styling(latex_options = &quot;scale_down&quot;)</code></pre>
+<table class="table table" style="margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+average_health_expenditure
+</th>
+<th style="text-align:right;">
+infant_mortality_rate_count
+</th>
+<th style="text-align:right;">
+adolescent_fertility_rate_count
+</th>
+<th style="text-align:right;">
+health_expenditure_count
+</th>
+<th style="text-align:right;">
+GDP_per_capita_count
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+above
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+47
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+below
+</td>
+<td style="text-align:right;">
+150
+</td>
+<td style="text-align:right;">
+166
+</td>
+<td style="text-align:right;">
+165
+</td>
+<td style="text-align:right;">
+167
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Correlation matrix for numeric variables.
+projectdata_cor &lt;- projectdata %&gt;% select_if(is.numeric)
+cor(projectdata_cor) %&gt;% as.data.frame %&gt;% rownames_to_column %&gt;% 
+    pivot_longer(-1, names_to = &quot;comparable variable&quot;, values_to = &quot;correlation&quot;) %&gt;% 
+    kable() %&gt;% kable_styling(full_width = F)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+rowname
+</th>
+<th style="text-align:left;">
+comparable variable
+</th>
+<th style="text-align:right;">
+correlation
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:right;">
+0.7866996
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:right;">
+-0.4637183
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:right;">
+-0.5433928
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:right;">
+0.7866996
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:right;">
+-0.4544905
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:right;">
+-0.5280361
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:right;">
+-0.4637183
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:right;">
+-0.4544905
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:right;">
+0.9070780
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:left;">
+infant_mortality_rate
+</td>
+<td style="text-align:right;">
+-0.5433928
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:left;">
+adolescent_fertility_rate
+</td>
+<td style="text-align:right;">
+-0.5280361
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:left;">
+health_expenditure
+</td>
+<td style="text-align:right;">
+0.9070780
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:left;">
+GDP_per_capita
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="after-running-the-statistical-analyses-min-max-average-median-standard-deviation-and-variation-for-each-variable-without-grouping-i-observed-common-trends-among-the-different-variables.-for-example-in-adolescent-fertility-rate-and-infant-mortality-rate-i-found-that-there-is-a-greater-variance-among-the-adolescent-fertility-rate-with-a-variance-of-1532.4351-compared-to-377.9404-of-infant-mortality-rate.-in-addition-adolescent-fertility-rate-has-a-larger-average-and-predictably-a-larger-standard-deviation-relative-to-the-infant-mortality-rate-observations.-these-trends-are-interesting-and-not-what-i-expected.-i-expected-areas-with-high-infant-mortality-also-have-high-adolescent-fertility-but-not-higher-than-infant-mortality-because-infants-can-be-produced-by-women-from-all-ages.-as-for-gdp-per-capita-and-domestic-health-expenditure-per-capita-there-is-a-much-larger-variance-among-gdp-per-capita.-this-is-expected-because-of-the-nature-of-the-measurements.-however-the-substantial-variance-in-each-variable-is-significant-in-their-own-way.-it-is-eye-opening-to-observe-that-some-countries-have-an-average-domestic-health-expenditure-per-capita-as-low-as-2.43-current-usd." class="section level4">
+<h4>After running the statistical analyses min, max, average, median, standard deviation, and variation for each variable, without grouping, I observed common trends among the different variables. For example, in adolescent fertility rate and infant mortality rate I found that there is a greater variance among the adolescent fertility rate, with a variance of 1532.4351, compared to 377.9404 of infant mortality rate. In addition, adolescent fertility rate has a larger average and, predictably, a larger standard deviation relative to the infant mortality rate observations. These trends are interesting and not what I expected. I expected areas with high infant mortality also have high adolescent fertility but not higher than infant mortality because infants can be produced by women from all ages. As for GDP per capita and domestic health expenditure per capita there is a much larger variance among GDP per capita. This is expected because of the nature of the measurements. However, the substantial variance in each variable is significant in their own way. It is eye opening to observe that some countries have an average domestic health expenditure per capita as low as $2.43 (Current USD).</h4>
+</div>
+<div id="for-my-second-statistical-analyses-table-i-grouped-countries-in-two-categories-above-and-below-the-average-domestic-health-expenditure-per-capita-of-the-215-countries-in-my-sample-group.-my-previous-interpretations-in-the-statistical-analysis-table-without-grouping-remained-true-for-each-variable.-however-the-grouping-allowed-me-to-see-the-amount-of-countries-above-or-below-the-average-domestic-health-expenditure-per-capita.-it-was-interesting-to-see-that-of-my-sample-countries-there-were-more-than-three-times-the-amount-of-countries-below-the-average-health-expenditure-per-capita-than-above.-after-running-a-correlation-test-i-observed-a-positive-correlation-between-adolescent-fertility-rate-and-infant-mortality-rate.-this-was-an-expected-observation-because-poor-health-standards-will-likely-promote-premature-pregnancies-as-well-as-infants-not-getting-the-proper-care-they-need.-i-also-observed-that-both-adolescent-fertility-rate-and-infant-mortality-rate-shared-similar-negative-correlations-to-gdp-per-capita-and-health-expenditures-per-capita.-this-was-expected-because-the-less-money-a-country-has-and-the-less-money-a-country-allocates-to-healthcare-the-less-pregnant-women-receive-pre-natal-care-and-the-less-infants-receive-post-natal-care." class="section level4">
+<h4>For my second statistical analyses table I grouped countries in two categories: ‘above’ and ‘below’ the average domestic health expenditure per capita of the 215 countries in my sample group. My previous interpretations in the statistical analysis table without grouping remained true for each variable. However, the grouping allowed me to see the amount of countries above or below the average domestic health expenditure per capita. It was interesting to see that, of my sample countries, there were more than three times the amount of countries below the average health expenditure per capita than above. After running a correlation test, I observed a positive correlation between adolescent fertility rate and infant mortality rate. This was an expected observation because poor health standards will likely promote premature pregnancies as well as infants not getting the proper care they need. I also observed that both adolescent fertility rate and infant mortality rate shared similar negative correlations to GDP per capita and health expenditures per capita. This was expected because the less money a country has and the less money a country allocates to healthcare, the less pregnant women receive pre-natal care and the less infants receive post-natal care.</h4>
+<p>#Visualizations:</p>
+<pre class="r"><code># Correlation heatmap
+projectdata %&gt;% select_if(is.numeric) %&gt;% cor %&gt;% as.data.frame %&gt;% 
+    rownames_to_column %&gt;% pivot_longer(-1) %&gt;% ggplot(aes(rowname, 
+    name, fill = value)) + geom_tile() + geom_text(aes(label = round(value, 
+    2))) + xlab(&quot;&quot;) + ylab(&quot;&quot;) + theme(axis.text.x = element_text(angle = 45, 
+    hjust = 1)) + ggtitle(&quot;Heat Map for Numeric Variables&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/visualizing-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggplot number 1
+ggplot(data = projectdata_wcatagory, aes(y = infant_mortality_rate, 
+    x = health_expenditure)) + geom_point(aes(color = average_health_expenditure, 
+    size = GDP_per_capita)) + xlab(&quot;Domestic Government Health Expenditure Per Capit (US$)&quot;) + 
+    ylab(&quot;Infant Mortality Rate (deaths/1000 live births)&quot;) + 
+    ggtitle(&quot;Infant Mortality Rate by Government Health Expenditure for 215 Countries&quot;) + 
+    scale_y_continuous(trans = &quot;log2&quot;) + scale_x_continuous(trans = &quot;log2&quot;) + 
+    guides(color = guide_legend(title = &quot;Mean Health Expenditure&quot;)) + 
+    guides(size = guide_legend(title = &quot;GDP per capita (US$)&quot;))</code></pre>
+<p><img src="/project1_files/figure-html/visualizing-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># used to fit ggtitle in ggplot number 2 and 3
+wrapper &lt;- function(x, ...) {
+    paste(strwrap(x, ...), collapse = &quot;\n&quot;)
+}
+
+# ggplot number 2
+ggplot(projectdata_wcatagory, aes(x = average_health_expenditure, 
+    y = adolescent_fertility_rate, fill = average_health_expenditure)) + 
+    geom_bar(stat = &quot;summary&quot;, fun.y = &quot;mean&quot;) + geom_errorbar(stat = &quot;summary&quot;, 
+    width = 0.5) + xlab(&quot;Domestic Average Gov&#39;t Health Expenditure Per Capita&quot;) + 
+    ylab(&quot;Adolescent Fertility Rate (births/1000 Women 15-19)&quot;) + 
+    ggtitle(wrapper(&quot;Adolescent Fertility Rate for 215 Countries above/below the Average Government Health Expenditure&quot;, 
+        width = 80)) + scale_y_continuous(breaks = seq(0, 80, 
+    5)) + theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/visualizing-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggplot number 3
+forbarplot &lt;- projectdata_wcatagory %&gt;% filter(country %in% c(&quot;United States&quot;, 
+    &quot;India&quot;, &quot;Luxembourg&quot;))
+ggplot(forbarplot, aes(x = country, y = adolescent_fertility_rate, 
+    fill = average_health_expenditure)) + geom_bar(stat = &quot;summary&quot;, 
+    fun.y = &quot;mean&quot;) + xlab(&quot;Country&quot;) + ylab(&quot;Adolescent Fertility Rate (births/1000 Women 15-19)&quot;) + 
+    ggtitle(wrapper(&quot;Adolescent Fertility Rate for Three Countries above/below the Average Government Health Expenditure&quot;, 
+        width = 80)) + scale_y_continuous(breaks = seq(0, 20, 
+    5)) + guides(color = guide_legend(title = &quot;Mean Health Expenditure&quot;))</code></pre>
+<p><img src="/project1_files/figure-html/visualizing-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="in-my-first-ggplot-there-is-a-negative-correlation-between-average-domestic-government-health-expenditure-per-capita-and-infant-mortality-rate.-additionally-many-more-countries-have-a-health-expenditure-below-the-average-of-the-group-of-215-countries-in-this-test.-lastly-the-graph-shows-that-as-gdp-per-capita-increases-infant-mortality-sharply-decreases." class="section level4">
+<h4>In my first ggplot there is a negative correlation between average domestic government health expenditure per capita and infant mortality rate. Additionally, many more countries have a health expenditure below the average of the group of 215 countries in this test. Lastly, the graph shows that as GDP per capita increases, infant mortality sharply decreases.</h4>
+</div>
+<div id="the-second-ggplot-shows-a-significant-difference-in-adolescent-fertility-rates-among-the-countries-above-or-below-the-average-domestic-government-health-expenditure-per-capita.-countries-above-the-average-have-a-far-less-adolescent-fertility-rate-relative-to-those-below." class="section level4">
+<h4>The second ggplot shows a significant difference in adolescent fertility rates among the countries above or below the average domestic government health expenditure per capita. Countries above the average have a far less adolescent fertility rate relative to those below.</h4>
+</div>
+<div id="my-third-ggplot-shows-variability-within-countries-above-or-below-the-average-health-expenditure-per-capita-in-my-sample-data.-the-unites-states-having-a-higher-adolescent-fertility-rate-than-india-goes-against-the-previously-calculated-negative-correlation-between-health-expenditure-per-capita-of-a-country-and-that-countries-adolescent-fertility-rate." class="section level4">
+<h4>My third ggplot shows variability within countries above or below the average health expenditure per capita in my sample data. The Unites States having a higher adolescent fertility rate than India goes against the previously calculated negative correlation between health expenditure per capita of a country and that countries adolescent fertility rate.</h4>
+<p>#Principle Component Analysis:</p>
+<pre class="r"><code># Cleaned/ normalized data
+projectdata_dim &lt;- projectdata %&gt;% select_if(is.numeric) %&gt;% 
+    mutate_all(log) %&gt;% mutate_all(scale)
+rownames(projectdata_dim) &lt;- projectdata$country
+project_pca &lt;- princomp(projectdata_dim)
+names(project_pca)</code></pre>
+<pre><code>## [1] &quot;sdev&quot;     &quot;loadings&quot; &quot;center&quot;   &quot;scale&quot;    &quot;n.obs&quot;    &quot;scores&quot;   &quot;call&quot;</code></pre>
+<pre class="r"><code># Interpretation of principle components/ variation (found in
+# bottom paragraph)
+summary(project_pca, loadings = T)</code></pre>
+<pre><code>## Importance of components:
+##                           Comp.1     Comp.2     Comp.3      Comp.4
+## Standard deviation     1.8711484 0.56360508 0.36148089 0.178548992
+## Proportion of Variance 0.8793893 0.07978376 0.03281976 0.008007178
+## Cumulative Proportion  0.8793893 0.95917306 0.99199282 1.000000000
+## 
+## Loadings:
+##                           Comp.1 Comp.2 Comp.3 Comp.4
+## infant_mortality_rate      0.506  0.132  0.845  0.114
+## adolescent_fertility_rate  0.472  0.785 -0.397       
+## health_expenditure        -0.512  0.432  0.141  0.729
+## GDP_per_capita            -0.510  0.424  0.330 -0.672</code></pre>
+<pre class="r"><code>eigval &lt;- project_pca$sdev^2
+varprop = round(eigval/sum(eigval), 2)
+round(cumsum(eigval)/sum(eigval), 2)</code></pre>
+<pre><code>## Comp.1 Comp.2 Comp.3 Comp.4 
+##   0.88   0.96   0.99   1.00</code></pre>
+<pre class="r"><code># ggplot of proportion of variance explained by each PC
+ggplot() + geom_bar(aes(y = varprop, x = 1:4), stat = &quot;identity&quot;) + 
+    xlab(&quot;&quot;) + geom_path(aes(y = varprop, x = 1:4)) + geom_text(aes(x = 1:4, 
+    y = varprop, label = round(varprop, 2)), vjust = 1, col = &quot;white&quot;, 
+    size = 5) + scale_y_continuous(breaks = seq(0, 0.6, 0.2), 
+    labels = scales::percent) + scale_x_continuous(breaks = 1:10) + 
+    ggtitle(&quot;Proportion of Variance Explained by each Principal Component&quot;) + 
+    xlab(&quot;Principle Components&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/dimensionality%20reduction-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggplot of PC&#39;s- had to scale for logarithmic relationship
+projectdata_df &lt;- data.frame(PC1 = project_pca$scores[, 1], PC2 = project_pca$scores[, 
+    2])
+ggplot(projectdata_df, aes(PC1, PC2)) + geom_point() + ggtitle(&quot;Plot of Principle Component Scores 1 and 2&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/dimensionality%20reduction-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># High/lows countries in respective PC&#39;s
+country &lt;- projectdata$country
+# Score high on PC1
+project_pca$scores %&gt;% as.data.frame %&gt;% cbind(country, .) %&gt;% 
+    top_n(3, Comp.1) %&gt;% kable() %&gt;% kable_styling(full_width = F)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+Comp.1
+</th>
+<th style="text-align:right;">
+Comp.2
+</th>
+<th style="text-align:right;">
+Comp.3
+</th>
+<th style="text-align:right;">
+Comp.4
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Central African Republic
+</td>
+<td style="text-align:right;">
+3.570175
+</td>
+<td style="text-align:right;">
+-0.4027950
+</td>
+<td style="text-align:right;">
+0.0104899
+</td>
+<td style="text-align:right;">
+-0.1718686
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Congo, Dem. Rep. 
+</td>
+<td style="text-align:right;">
+3.426011
+</td>
+<td style="text-align:right;">
+-0.4400440
+</td>
+<td style="text-align:right;">
+-0.1356289
+</td>
+<td style="text-align:right;">
+-0.1991620
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Niger
+</td>
+<td style="text-align:right;">
+3.316560
+</td>
+<td style="text-align:right;">
+-0.0653743
+</td>
+<td style="text-align:right;">
+-0.5796572
+</td>
+<td style="text-align:right;">
+0.1411825
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Score low on PC1
+project_pca$scores %&gt;% as.data.frame %&gt;% cbind(country, .) %&gt;% 
+    top_n(3, wt = desc(Comp.1)) %&gt;% kable() %&gt;% kable_styling(full_width = F)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+Comp.1
+</th>
+<th style="text-align:right;">
+Comp.2
+</th>
+<th style="text-align:right;">
+Comp.3
+</th>
+<th style="text-align:right;">
+Comp.4
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Luxembourg
+</td>
+<td style="text-align:right;">
+-3.875803
+</td>
+<td style="text-align:right;">
+-0.0220506
+</td>
+<td style="text-align:right;">
+0.1147662
+</td>
+<td style="text-align:right;">
+-0.2504539
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Norway
+</td>
+<td style="text-align:right;">
+-3.739202
+</td>
+<td style="text-align:right;">
+-0.0118421
+</td>
+<td style="text-align:right;">
+0.0522458
+</td>
+<td style="text-align:right;">
+0.0086794
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Switzerland
+</td>
+<td style="text-align:right;">
+-3.766136
+</td>
+<td style="text-align:right;">
+-0.4058391
+</td>
+<td style="text-align:right;">
+0.7698971
+</td>
+<td style="text-align:right;">
+0.0627140
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Score high on P2
+project_pca$scores %&gt;% as.data.frame %&gt;% cbind(country, .) %&gt;% 
+    top_n(3, wt = Comp.2) %&gt;% kable() %&gt;% kable_styling(full_width = F)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+Comp.1
+</th>
+<th style="text-align:right;">
+Comp.2
+</th>
+<th style="text-align:right;">
+Comp.3
+</th>
+<th style="text-align:right;">
+Comp.4
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Equatorial Guinea
+</td>
+<td style="text-align:right;">
+1.4867404
+</td>
+<td style="text-align:right;">
+1.400267
+</td>
+<td style="text-align:right;">
+0.6862421
+</td>
+<td style="text-align:right;">
+-0.5020360
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Panama
+</td>
+<td style="text-align:right;">
+-0.3524247
+</td>
+<td style="text-align:right;">
+1.362954
+</td>
+<td style="text-align:right;">
+-0.0559543
+</td>
+<td style="text-align:right;">
+0.0183577
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+United States
+</td>
+<td style="text-align:right;">
+-2.6007496
+</td>
+<td style="text-align:right;">
+1.138398
+</td>
+<td style="text-align:right;">
+0.3006431
+</td>
+<td style="text-align:right;">
+0.2466770
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Score low on PC2
+project_pca$scores %&gt;% as.data.frame %&gt;% cbind(country, .) %&gt;% 
+    top_n(3, wt = desc(Comp.2)) %&gt;% kable() %&gt;% kable_styling(full_width = F)</code></pre>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+Comp.1
+</th>
+<th style="text-align:right;">
+Comp.2
+</th>
+<th style="text-align:right;">
+Comp.3
+</th>
+<th style="text-align:right;">
+Comp.4
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:right;">
+0.9661777
+</td>
+<td style="text-align:right;">
+-1.410328
+</td>
+<td style="text-align:right;">
+0.5740017
+</td>
+<td style="text-align:right;">
+-0.1857252
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Korea, Rep. 
+</td>
+<td style="text-align:right;">
+-3.4207988
+</td>
+<td style="text-align:right;">
+-1.650929
+</td>
+<td style="text-align:right;">
+0.4531960
+</td>
+<td style="text-align:right;">
+-0.0466214
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tunisia
+</td>
+<td style="text-align:right;">
+-0.4402602
+</td>
+<td style="text-align:right;">
+-1.240976
+</td>
+<td style="text-align:right;">
+0.4521427
+</td>
+<td style="text-align:right;">
+0.3082754
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># ggplot of loadings
+project_pca$loadings[1:4, 1:2] %&gt;% as.data.frame %&gt;% rownames_to_column %&gt;% 
+    ggplot() + geom_hline(aes(yintercept = 0), lty = 2) + geom_vline(aes(xintercept = 0), 
+    lty = 2) + ylab(&quot;PC2&quot;) + xlab(&quot;PC1&quot;) + geom_segment(aes(x = 0, 
+    y = 0, xend = Comp.1, yend = Comp.2), arrow = arrow(), col = &quot;red&quot;) + 
+    geom_label_repel(aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, 
+        label = rowname)) + ggtitle(&quot;Plot of Loadings&quot;)</code></pre>
+<p><img src="/project1_files/figure-html/dimensionality%20reduction-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="after-completing-the-principle-component-analysis-i-observed-that-88-of-the-variance-in-my-data-set-is-explained-by-principle-component-one-pc1.-countries-that-score-high-in-pc1-have-high-gdp-and-high-health-expenditures-but-tend-to-have-low-adolescent-fertility-rates-as-well-as-low-infant-mortality-rates.-on-the-other-hand-countries-that-score-low-in-pc1-have-relatively-low-gdp-and-low-health-expenditures-but-tend-to-have-high-adolescent-fertility-rates-as-well-as-high-infant-mortality-rates." class="section level4">
+<h4>After completing the Principle Component Analysis, I observed that 88% of the variance, in my data set, is explained by principle component one (PC1). Countries that score high in PC1 have high GDP and high health expenditures but tend to have low adolescent fertility rates as well as low infant mortality rates. On the other hand, countries that score low in PC1 have relatively low GDP and low health expenditures but tend to have high adolescent fertility rates as well as high infant mortality rates.</h4>
+</div>
+<div id="principle-component-two-pc2-accounted-for-8-of-the-variance-but-explained-an-intriguing-relationship.-countries-that-score-high-on-pc2-have-low-gdp-and-health-expenditures-per-capita-but-also-have-low-adolescent-fertility-and-infant-mortality-rates.-this-trend-can-be-found-in-india.-additionally-countries-that-score-low-in-pc2-like-the-united-states-are-countries-with-high-gdp-and-health-expenditures-per-capita-but-also-have-relatively-high-infant-mortality-and-adolescent-fertility-rates.-this-counterintuitive-phenomenon-might-be-explained-by-a-countrys-culture-policies-population-and-wealth-distribution.-i-chose-to-use-only-two-principle-components-because-they-exceeded-the-recommended-80-of-explained-variance." class="section level4">
+<h4>Principle component two (PC2) accounted for 8% of the variance but explained an intriguing relationship. Countries that score high on PC2 have low GDP and health expenditures per capita but also have low adolescent fertility and infant mortality rates. This trend can be found in India. Additionally, countries that score low in PC2, like the United States, are countries with high GDP and health expenditures per capita but also have relatively high infant mortality and adolescent fertility rates. This counterintuitive phenomenon might be explained by a country’s culture, policies, population, and wealth distribution. I chose to use only two principle components because they exceeded the recommended 80% of explained variance.</h4>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
