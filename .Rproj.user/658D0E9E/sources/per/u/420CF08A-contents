@@ -1,5 +1,0 @@
-blogdown::serve_site()
-install.packages("lmtest")
-install.packages("carData")
-install.packages("sandwich")
-install.packages("glmnet")

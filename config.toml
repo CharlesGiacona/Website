@@ -11,7 +11,7 @@ theme = "hugo-sustain"
   post = "/:year/:month/:day/:slug"
 
 [params]
-  avatar = "profile_pic.png"
+  avatar = "profilepic.jpg"
   author = "Charles Giacona"
   description = "Describe your website"
 
@@ -40,4 +40,4 @@ theme = "hugo-sustain"
   name = "resume"
   identifier = "resume"
   weight = 300
-  url = "/resume/"
+  url = "resume.pdf"
