@@ -1,5 +1,5 @@
 ---
-title: R + Python
+title: Using R and python
 author: ''
 date: '2020-05-13'
 slug: r-python
@@ -14,7 +14,7 @@ Here is a picture of me just before I went on one of the longest "hikes" of my l
 
   I am standing at the top of the Grand Canyon. If you have not been, I DEFINETELY recommend the trip; it was one of the most magnificent things I have ever seen. My visit at the Grand Canyon was part of a southwest road trip my childhood friend and I decided to take. We mainly stuck to national parks and other outdoor activities. 
   
-  When I heard about a ~9-hour hike down the canyon I saw an exciting challenge. However, as a fitness nerd who was trying to put on weight I did not want to go at a caloric deficit for the day so, I decided to calculate about how much calories I would burn during the hike so that I know how much more food I need to eat to maintain a caloric surplus for the day (aka putting on weight).
+  When I heard about a ~9-hour hike down the canyon I saw an exciting challenge. However, as a fitness nerd, who was trying to put on weight, I did not want to go at a caloric deficit for the day. I decided to calculate about how many calories I would burn during the hike so that I know how much more food I need to eat to maintain a caloric surplus for the day (aka putting on weight).
   
   If I knew about R and python at the time it would have went a little something like this:
 
@@ -22,6 +22,7 @@ Here is a picture of me just before I went on one of the longest "hikes" of my l
 #R code for calculating calories burned
 
 library(reticulate)
+
 #Time spent hiking in the Grand Canyon
 time_spent<- 8.75
 ```
@@ -33,6 +34,7 @@ time_spent<- 8.75
 
 #estimated calories burned/ hour hiking
 c_per_hr = 710
+
 #calculation of calories burned during the hike
 c_hiking=c_per_hr*r.time_spent
 print(c_hiking)
@@ -41,7 +43,7 @@ print(c_hiking)
 ```{R}
 #Double checking in R code
 
-#calories burned during the hike
+#calories burned during the hike using raw numbers
 c_hiking<- 710*8.75
 
 #do they match up?
@@ -50,23 +52,32 @@ py$c_hiking == c_hiking
 
 6,212.5 is a number that was difficult to swallow. 
 
+
 Here is how I did it:
 
 ```{R}
-df <- data.frame("meal" = c("breakfast","snack1","lunch","snack2","dinner","snack3"), "calories" = c(1425, 500, 1575, 450, 2000, 550))
+#using R to create a data frame of my meals and their calories
+df <- data.frame("meal" = c("breakfast","snack1","lunch","snack2","dinner","snack3"), "calories" = c(1725, 500, 1875, 450, 2000, 550))
+df
+library(tidyverse)
+#how much I ended up eating that day
+colSums(Filter(is.numeric, df))
 ```
 
+For fun I will use python to find the largest meal of the day.
 
 ```{python}
+#Switching to python: Using pandas and seaborn to emulate the tidyverse
+
 import matplotlib.pyplot as plt 
 import seaborn as sns 
 import numpy as np 
 import pandas as pd 
 
+#using data frame created in R code
 df=r.df
 
-#now selecting and filtering to see the 2000 calorie meal
-
+#selecting and filtering to see the 2000 calorie meal
 (df.filter(['meal', 'calories']).query('calories == "2000"').head(3))
 
 ```
