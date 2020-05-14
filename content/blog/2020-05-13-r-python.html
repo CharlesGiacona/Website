@@ -1,0 +1,53 @@
+---
+title: Using R and Python
+author: ''
+date: '2020-05-13'
+slug: r-python
+categories: []
+tags: []
+description: ''
+---
+
+
+
+<p>Here is a picture of me just before I went on one of the longest “hikes” of my life.</p>
+<p><img src="/blog/2020-05-13-r-python_files/blogpic.jpg" /></p>
+<p>I am standing at the top of the Grand Canyon. If you have not been, I DEFINETELY recommend the trip; it was one of the most magnificent things I have ever seen. My visit at the Grand Canyon was part of a southwest road trip my childhood friend and I decided to take. We mainly stuck to national parks and other outdoor activities.</p>
+<p>When I heard about a ~9-hour hike down the canyon I saw an exciting challenge. However, as a fitness nerd who was trying to put on weight I did not want to go at a caloric deficit for the day so, I decided to calculate about how much calories I would burn during the hike so that I know how much more food I need to eat to maintain a caloric surplus for the day (aka putting on weight).</p>
+<p>If I knew about R and python at the time it would have went a little something like this:</p>
+<pre class="r"><code>#R code for calculating calories burned
+
+library(reticulate)
+#Time spent hiking in the Grand Canyon
+time_spent&lt;- 8.75</code></pre>
+<pre class="python"><code>#Taking over these calculations in python
+
+#estimated calories burned/ hour hiking
+c_per_hr = 710
+#calculation of calories burned during the hike
+c_hiking=c_per_hr*r.time_spent
+print(c_hiking)</code></pre>
+<pre><code>## 6212.5</code></pre>
+<pre class="r"><code>#Double checking in R code
+
+#calories burned during the hike
+c_hiking&lt;- 710*8.75
+
+#do they match up?
+py$c_hiking == c_hiking</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>6,212.5 is a number that was difficult to swallow.</p>
+<p>Here is how I did it:</p>
+<pre class="r"><code>df &lt;- data.frame(&quot;meal&quot; = c(&quot;breakfast&quot;,&quot;snack1&quot;,&quot;lunch&quot;,&quot;snack2&quot;,&quot;dinner&quot;,&quot;snack3&quot;), &quot;calories&quot; = c(1425, 500, 1575, 450, 2000, 550))</code></pre>
+<pre class="python"><code>import matplotlib.pyplot as plt 
+import seaborn as sns 
+import numpy as np 
+import pandas as pd 
+
+df=r.df
+
+#now selecting and filtering to see the 2000 calorie meal
+
+(df.filter([&#39;meal&#39;, &#39;calories&#39;]).query(&#39;calories == &quot;2000&quot;&#39;).head(3))</code></pre>
+<pre><code>##      meal  calories
+## 4  dinner    2000.0</code></pre>

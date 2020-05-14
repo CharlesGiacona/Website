@@ -1,0 +1,72 @@
+---
+title: R + Python
+author: ''
+date: '2020-05-13'
+slug: r-python
+categories: []
+tags: []
+description: ''
+---
+
+Here is a picture of me just before I went on one of the longest "hikes" of my life.
+
+![](/blog/2020-05-13-r-python_files/blogpic.jpg)
+
+  I am standing at the top of the Grand Canyon. If you have not been, I DEFINETELY recommend the trip; it was one of the most magnificent things I have ever seen. My visit at the Grand Canyon was part of a southwest road trip my childhood friend and I decided to take. We mainly stuck to national parks and other outdoor activities. 
+  
+  When I heard about a ~9-hour hike down the canyon I saw an exciting challenge. However, as a fitness nerd who was trying to put on weight I did not want to go at a caloric deficit for the day so, I decided to calculate about how much calories I would burn during the hike so that I know how much more food I need to eat to maintain a caloric surplus for the day (aka putting on weight).
+  
+  If I knew about R and python at the time it would have went a little something like this:
+
+```{R}
+#R code for calculating calories burned
+
+library(reticulate)
+#Time spent hiking in the Grand Canyon
+time_spent<- 8.75
+```
+
+
+
+```{python}
+#Taking over these calculations in python
+
+#estimated calories burned/ hour hiking
+c_per_hr = 710
+#calculation of calories burned during the hike
+c_hiking=c_per_hr*r.time_spent
+print(c_hiking)
+```
+
+```{R}
+#Double checking in R code
+
+#calories burned during the hike
+c_hiking<- 710*8.75
+
+#do they match up?
+py$c_hiking == c_hiking
+```
+
+6,212.5 is a number that was difficult to swallow. 
+
+Here is how I did it:
+
+```{R}
+df <- data.frame("meal" = c("breakfast","snack1","lunch","snack2","dinner","snack3"), "calories" = c(1425, 500, 1575, 450, 2000, 550))
+```
+
+
+```{python}
+import matplotlib.pyplot as plt 
+import seaborn as sns 
+import numpy as np 
+import pandas as pd 
+
+df=r.df
+
+#now selecting and filtering to see the 2000 calorie meal
+
+(df.filter(['meal', 'calories']).query('calories == "2000"').head(3))
+
+```
